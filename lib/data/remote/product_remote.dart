@@ -1,48 +1,68 @@
-import 'dart:convert';
-
-import 'api_path.dart';
 import '../model/product_model.dart';
-import 'package:http/http.dart' as http;
+import 'api_path.dart';
 
 class ProductRemote {
-  Future<List<ProductModel>> fetchListProduct() async {
-    final response = await http.get(Uri.parse("${ApiPath.baseUrl}/products"));
-
-    if (response.statusCode == 200) {
-      List<ProductModel> product = (json.decode(response.body) as List)
-          .map((data) => ProductModel.fromJson(data))
-          .toList();
-      return product;
-    } else {
-      throw Exception('Failed to load product');
-    }
-  }
-
-  Future<ProductModel> fetchProduct({
-    required int id,
+  Future<ProductModel> addProduct({
+    required String title,
+    required double price,
+    required String description,
+    required String category,
   }) async {
-    final response =
-        await http.get(Uri.parse("${ApiPath.baseUrl}/products/$id"));
+    try {
+      var productId = productRef.doc().id;
 
-    if (response.statusCode == 200) {
-      final productCart = ProductModel.fromJson(json.decode(response.body));
+      ProductModel product = ProductModel(
+        id: productId,
+        title: title,
+        price: price.toDouble(),
+        description: description,
+        category: category,
+        image: "https://placehold.jp/200x200.png",
+        rating: Rating(
+          rate: 0,
+          count: 0,
+        ),
+      );
 
-      return productCart;
-    } else {
-      throw Exception('Failed to load product');
+      productRef.doc(productId).set({
+        'id': product.id,
+        'title': product.title,
+        'price': product.price,
+        'description': product.description,
+        'category': product.category,
+        'image': product.image,
+        'rating': product.rating?.toJson(),
+      });
+
+      return product;
+    } catch (e) {
+      rethrow;
     }
   }
 
-  Future<List<String>> fetchListCategory() async {
-    final response = await http.get(Uri.parse("${ApiPath.baseUrl}/categories"));
+  Future<ProductModel> fetchProduct(String id) async {
+    try {
+      var snapshot = await productRef.doc(id).get();
+      ProductModel product = ProductModel.fromJson(
+        snapshot.data() as Map<String, dynamic>,
+      );
 
-    if (response.statusCode == 200) {
-      List<String> category = (json.decode(response.body) as List)
-          .map((data) => data.toString())
+      return product;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<ProductModel>> fetchListProduct() async {
+    try {
+      var snapshot = await productRef.get();
+      List<ProductModel> products = snapshot.docs
+          .map((e) => ProductModel.fromJson(e.data() as Map<String, dynamic>))
           .toList();
-      return category;
-    } else {
-      throw Exception('Failed to load category');
+
+      return products;
+    } catch (e) {
+      rethrow;
     }
   }
 }

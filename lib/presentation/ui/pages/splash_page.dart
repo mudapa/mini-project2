@@ -35,7 +35,7 @@ class _SplashPageState extends State<SplashPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Mini Store 2',
+              'Mini Store 3',
               style: display.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),

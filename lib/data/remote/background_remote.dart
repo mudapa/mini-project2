@@ -21,10 +21,16 @@ class BackgroundRemote {
   }
 
   static Future<void> callback() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
     final NotificationHelper notificationHelper = NotificationHelper();
     var result = await ProductRemote().fetchListProduct();
-    await notificationHelper.showNotification(
-        FlutterLocalNotificationsPlugin(), result);
+    await notificationHelper.showProductNotification(
+      FlutterLocalNotificationsPlugin(),
+      result,
+    );
 
     _uiSendPort ??= IsolateNameServer.lookupPortByName(_isolateName);
     _uiSendPort?.send(null);

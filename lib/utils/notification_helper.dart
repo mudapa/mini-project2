@@ -24,9 +24,20 @@ class NotificationHelper {
       final payload = details.payload;
       selectNotificationSubject.add(payload ?? 'empty payload');
     });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        showFcmNotification(flutterLocalNotificationsPlugin,
+            message.notification?.title, message.notification?.body);
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      selectNotificationSubject.add(jsonEncode(message.data));
+    });
   }
 
-  Future<void> showNotification(
+  Future<void> showProductNotification(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
       List<ProductModel> product) async {
     var channelId = "1";
@@ -55,14 +66,48 @@ class NotificationHelper {
       titleNotification,
       titleProduct,
       platformChannelSpecifics,
-      payload: json.encode(selectedProduct.toJson()),
+      payload: jsonEncode(
+        selectedProduct.toJson(),
+      ),
+    );
+  }
+
+  Future<void> showFcmNotification(
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+    String? title,
+    String? body,
+  ) async {
+    var channelId = "1";
+    var channelName = "channel_01";
+    var channelDescription = "mini store 2 channel";
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        channelId, channelName,
+        channelDescription: channelDescription,
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker',
+        styleInformation: const DefaultStyleInformation(true, true));
+
+    var platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      title ?? 'No Title',
+      body ?? 'No Body',
+      platformChannelSpecifics,
+      payload: jsonEncode({
+        'title': title,
+        'body': body,
+      }),
     );
   }
 
   void configureSelectNotificationSubject() {
     selectNotificationSubject.stream.listen(
       (String payload) async {
-        var data = ProductModel.fromJson(json.decode(payload));
+        var data = ProductModel.fromJson(jsonDecode(payload));
         navigatorKey.currentState?.push(
           MaterialPageRoute(
             builder: (context) => DetailProductPage(product: data),

@@ -16,7 +16,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductBloc>().add(LoadProductEvent());
+    context.read<ProductBloc>().add(FetchListProduct());
     searchController.addListener(_filterProducts);
   }
 
@@ -41,7 +41,7 @@ class _ProductPageState extends State<ProductPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Mini Store 2',
+          'Mini Store 3',
           style: title.copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -55,17 +55,17 @@ class _ProductPageState extends State<ProductPage> {
           child: RefreshIndicator(
             onRefresh: () async {
               searchController.clear();
-              context.read<ProductBloc>().add(LoadProductEvent());
+              context.read<ProductBloc>().add(FetchListProduct());
             },
             child: BlocBuilder<ProductBloc, ProductState>(
               builder: (context, state) {
-                if (state is ListProductLoading) {
+                if (state is ProductLoading) {
                   return Center(
                     child: lottieLoading,
                   );
                 }
 
-                if (state is ListProductSuccess) {
+                if (state is ProductListSuccess) {
                   products = state.products;
                   return ListView(children: [
                     const SizedBox(height: 16),
@@ -139,7 +139,7 @@ class _ProductPageState extends State<ProductPage> {
                   ]);
                 }
 
-                if (state is ListProductFailure) {
+                if (state is ProductFailure) {
                   return Center(
                     child: lottieNoInternet,
                   );

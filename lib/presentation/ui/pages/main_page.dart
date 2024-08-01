@@ -5,6 +5,7 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<ProfileBloc>().add(LoadProfileEvent(id: settings.get('id')));
     Widget buildContent(int currentIndex) {
       switch (currentIndex) {
         case 0:
@@ -65,11 +66,25 @@ class MainPage extends StatelessWidget {
     return BlocBuilder<PageCubit, int>(
       builder: (context, currentIndex) {
         return Scaffold(
-          body: Stack(
-            children: [
-              buildContent(currentIndex),
-              customButtonNavigation(),
-            ],
+          body: BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              if (state is ProfileLoadedState) {
+                if (state.profile.role == 0) {
+                  return DashboardPage(
+                    user: state.profile,
+                  );
+                }
+                if (state.profile.role == 1) {
+                  return Stack(
+                    children: [
+                      buildContent(currentIndex),
+                      customButtonNavigation(),
+                    ],
+                  );
+                }
+              }
+              return const SizedBox();
+            },
           ),
         );
       },

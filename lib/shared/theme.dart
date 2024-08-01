@@ -16,8 +16,8 @@ ThemeData themeData = ThemeData(
     ),
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: primaryColor,
-    // shape: const CircleBorder(),
+    backgroundColor: greenColor,
+    shape: const CircleBorder(),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: whiteColor,

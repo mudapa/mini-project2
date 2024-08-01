@@ -24,7 +24,7 @@ class _SignInPageState extends State<SignInPage> {
             child: ListView(
               children: [
                 Text(
-                  'Mini Store 2',
+                  'Mini Store 3',
                   style: title.copyWith(fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),

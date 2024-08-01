@@ -10,7 +10,7 @@ class ProfileInitialState extends ProfileState {}
 class ProfileLoadingState extends ProfileState {}
 
 class ProfileLoadedState extends ProfileState {
-  final ProfileModel profile;
+  final UserModel profile;
 
   ProfileLoadedState({required this.profile});
 

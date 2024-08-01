@@ -39,3 +39,63 @@ final class UserFailure extends UserState {
   @override
   List<Object> get props => [message];
 }
+
+final class ListUserLoading extends UserState {}
+
+final class ListUserSuccess extends UserState {
+  final List<UserModel> users;
+
+  const ListUserSuccess(this.users);
+
+  @override
+  List<Object> get props => [users];
+}
+
+final class ListUserFailure extends UserState {
+  final String message;
+
+  const ListUserFailure(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class UserUpdateLoading extends UserState {}
+
+final class UserUpdateSuccess extends UserState {
+  final UserModel user;
+
+  const UserUpdateSuccess(this.user);
+
+  @override
+  List<Object> get props => [user];
+}
+
+final class UserUpdateFailure extends UserState {
+  final String message;
+
+  const UserUpdateFailure(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class UserDeleteLoading extends UserState {}
+
+final class UserDeleteSuccess extends UserState {
+  final UserModel user;
+
+  const UserDeleteSuccess(this.user);
+
+  @override
+  List<Object> get props => [user];
+}
+
+final class UserDeleteFailure extends UserState {
+  final String message;
+
+  const UserDeleteFailure(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

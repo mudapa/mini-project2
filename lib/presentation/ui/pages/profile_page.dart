@@ -12,7 +12,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    context.read<ProfileBloc>().add(LoadProfileEvent());
     _checkNotifStatus();
     super.initState();
   }
@@ -31,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Mini Store 2',
+          'Mini Store 3',
           style: title.copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -71,13 +70,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           TextButton(
                             onPressed: () {
                               context.read<UserCubit>().signOut();
-                              Navigator.pop(context);
+                              GoRouter.of(context).pop();
                             },
                             child: const Text('Yes'),
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              GoRouter.of(context).pop();
                             },
                             child: const Text('No'),
                           ),
@@ -114,26 +113,42 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CircleAvatar(
-                              backgroundColor: primaryColor.withOpacity(0.8),
-                              radius: 32,
-                              child: Text(
-                                state.profile.username![0].toUpperCase(),
-                                style: title.copyWith(
-                                  color: whiteColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
+                            state.profile.image == null ||
+                                    state.profile.image == ""
+                                ? CircleAvatar(
+                                    backgroundColor:
+                                        primaryColor.withOpacity(0.8),
+                                    radius: 32,
+                                    child: Text(
+                                      state.profile.userName![0].toUpperCase(),
+                                      style: title.copyWith(
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    radius: 32,
+                                    backgroundImage: NetworkImage(
+                                      state.profile.image!,
+                                    ),
+                                  ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  '${state.profile.name!.firstname} ${state.profile.name!.lastname}',
-                                  style: title.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                                state.profile.name == null
+                                    ? Text(
+                                        '${state.profile.userName}',
+                                        style: title.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      )
+                                    : Text(
+                                        '${state.profile.name!.firstname} ${state.profile.name!.lastname}',
+                                        style: title.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                 Text(
                                   state.profile.email!,
                                   style: body.copyWith(
@@ -157,11 +172,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               icon: Icon(Icons.edit_rounded, color: whiteColor),
                               onPressed: () {
-                                snackbar(
-                                  context,
-                                  msg: 'Coming Soon',
-                                  backgroundColor: orangeColor,
-                                  textColor: whiteColor,
+                                GoRouter.of(context).go(
+                                  NamedRoutes.updateProfilePath,
+                                  extra: state.profile,
                                 );
                               },
                             ),
@@ -238,49 +251,51 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Card(
-                      color: whiteColor,
-                      elevation: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text('Your Address',
-                                    style: title.copyWith(
-                                        fontWeight: FontWeight.w600)),
-                                const Spacer(),
-                                TextButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    'Change Address >',
-                                    style: body.copyWith(
-                                      color: greyColor,
-                                      fontWeight: FontWeight.w600,
+                    state.profile.address == null
+                        ? const SizedBox()
+                        : Card(
+                            color: whiteColor,
+                            elevation: 4,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text('Your Address',
+                                          style: title.copyWith(
+                                              fontWeight: FontWeight.w600)),
+                                      const Spacer(),
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Text(
+                                          'Change Address >',
+                                          style: body.copyWith(
+                                            color: greyColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    '${state.profile.address!.city}, ${state.profile.address!.street!}, ${state.profile.address!.number}, ${state.profile.address!.zipcode!}',
+                                    style: body,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  MiniMap(
+                                    center: LatLng(
+                                      double.parse(state
+                                          .profile.address!.geolocation!.lat!),
+                                      double.parse(state
+                                          .profile.address!.geolocation!.long!),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              '${state.profile.address!.city}, ${state.profile.address!.street!}, ${state.profile.address!.number}, ${state.profile.address!.zipcode!}',
-                              style: body,
-                            ),
-                            const SizedBox(height: 16),
-                            MiniMap(
-                              center: LatLng(
-                                double.parse(
-                                    state.profile.address!.geolocation!.lat!),
-                                double.parse(
-                                    state.profile.address!.geolocation!.long!),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
                     const SizedBox(height: 128),
                   ],
                 );

@@ -9,13 +9,15 @@ part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(CartInitial()) {
-    on<LoadCartEvent>((event, emit) async {
-      emit(CartLoadingState());
-      try {
-        final cart = await CartRemote().fetchCart();
-        emit(CartLoadedState(cart: cart));
-      } catch (e) {
-        emit(CartErrorState());
+    on<CartEvent>((event, emit) async {
+      if (event is FetchListCart) {
+        emit(CartLoadingState());
+        try {
+          final cart = await CartRemote().fetchCart();
+          emit(CartLoadedState(cart: cart));
+        } catch (e) {
+          emit(CartErrorState());
+        }
       }
     });
   }

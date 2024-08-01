@@ -7,22 +7,31 @@ sealed class ProductState extends Equatable {
 
 final class ProductInitial extends ProductState {}
 
-class ListProductLoading extends ProductState {}
+final class ProductLoading extends ProductState {}
 
-class ListProductSuccess extends ProductState {
+final class ProductSuccess extends ProductState {
+  final ProductModel product;
+
+  ProductSuccess(this.product);
+
+  @override
+  List<Object> get props => [product];
+}
+
+final class ProductListSuccess extends ProductState {
   final List<ProductModel> products;
 
-  ListProductSuccess(this.products);
+  ProductListSuccess(this.products);
 
   @override
   List<Object> get props => [products];
 }
 
-class ListProductFailure extends ProductState {
-  final String error;
+final class ProductFailure extends ProductState {
+  final String message;
 
-  ListProductFailure(this.error);
+  ProductFailure(this.message);
 
   @override
-  List<Object> get props => [error];
+  List<Object> get props => [message];
 }

@@ -35,6 +35,59 @@ class UserRemote {
     }
   }
 
+  Future<List<UserModel>> fetchUsers() async {
+    try {
+      QuerySnapshot result = await userRef.get();
+
+      List<UserModel> users = result.docs.map(
+        (e) {
+          return UserModel.fromJson(e.id, e.data() as Map<String, dynamic>);
+        },
+      ).toList();
+
+      return users;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<UserModel> updateUser({
+    required String id,
+    required String userName,
+    required String email,
+    String? image,
+    int? role,
+  }) async {
+    try {
+      await userRef.doc(id).update({
+        'userName': userName,
+        'email': email,
+        'image': image,
+        'role': role,
+      });
+
+      return UserModel(
+        id: id,
+        userName: userName,
+        email: email,
+        image: image,
+        role: role,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<UserModel> deleteUser(String id) async {
+    try {
+      await userRef.doc(id).delete();
+
+      return UserModel(id: id);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<UserModel> signIn({
     required String userName,
     required String password,

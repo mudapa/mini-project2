@@ -5,8 +5,12 @@ abstract class ProfileEvent extends Equatable {
 }
 
 class LoadProfileEvent extends ProfileEvent {
+  final String id;
+
+  const LoadProfileEvent({required this.id});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        id,
+      ];
 }
-
-

@@ -5,7 +5,7 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<CartBloc>().add(LoadCartEvent());
+    context.read<CartBloc>().add(FetchListCart());
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -21,18 +21,18 @@ class CartPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
           ),
-          child: Center(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: BlocBuilder<CartBloc, CartState>(
-                builder: (context, state) {
-                  if (state is CartLoadingState) {
-                    return Center(
-                      child: lottieLoading,
-                    );
-                  }
-                  if (state is CartLoadedState) {
-                    final data = state.cart;
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: BlocBuilder<CartBloc, CartState>(
+              builder: (context, state) {
+                if (state is CartLoadingState) {
+                  return Center(
+                    child: lottieLoading,
+                  );
+                }
+                if (state is CartLoadedState) {
+                  final data = state.cart;
+                  if (data.isNotEmpty) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -79,25 +79,70 @@ class CartPage extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Text(
-                          'History Cart',
-                          style: title.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
                         HistoryCart(data: data),
                       ],
                     );
                   }
 
-                  if (state is CartErrorState) {
-                    return Center(
-                      child: lottieNoInternet,
+                  if (data.isEmpty) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        Text(
+                          'Cart',
+                          style: title.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 16,
+                          ),
+                          padding: const EdgeInsets.all(16),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: greyColor,
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              lottieCartEmpty,
+                              Text(
+                                'Your cart is empty',
+                                style: body.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: placeholderColor,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              CustomButton(
+                                onPressed: () {
+                                  context.read<PageCubit>().setPage(0);
+                                },
+                                width: 200,
+                                color: primaryColor,
+                                colorText: whiteColor,
+                                title: 'Start Shopping',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     );
                   }
-                  return const SizedBox();
-                },
-              ),
+                }
+
+                if (state is CartErrorState) {
+                  return Center(
+                    child: lottieNoInternet,
+                  );
+                }
+                return const SizedBox();
+              },
             ),
           ),
         ),

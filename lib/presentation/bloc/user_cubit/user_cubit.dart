@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -56,6 +58,56 @@ class UserCubit extends Cubit<UserState> {
       emit(UserSignOutSuccess());
     } catch (e) {
       emit(UserFailure(e.toString()));
+    }
+  }
+
+  void getListUser() async {
+    try {
+      emit(ListUserLoading());
+
+      List<UserModel> users = await UserRemote().fetchUsers();
+
+      emit(ListUserSuccess(users));
+    } catch (e) {
+      emit(ListUserFailure(e.toString()));
+    }
+  }
+
+  Future<void> updateUser({
+    required String id,
+    required String userName,
+    required String email,
+    String? image,
+    int? role,
+  }) async {
+    emit(UserUpdateLoading());
+    try {
+      UserModel user = await UserRemote().updateUser(
+        id: id,
+        userName: userName,
+        email: email,
+        image: image!,
+        role: role!,
+      );
+
+      emit(UserUpdateSuccess(user));
+    } on SocketException {
+      emit(const UserUpdateFailure('No internet connection'));
+    } catch (e) {
+      emit(UserUpdateFailure(e.toString()));
+    }
+  }
+
+  Future<void> deleteUser(String id) async {
+    emit(UserDeleteLoading());
+    try {
+      UserModel user = await UserRemote().deleteUser(id);
+
+      emit(UserDeleteSuccess(user));
+    } on SocketException {
+      emit(const UserDeleteFailure('No internet connection'));
+    } catch (e) {
+      emit(UserDeleteFailure(e.toString()));
     }
   }
 }

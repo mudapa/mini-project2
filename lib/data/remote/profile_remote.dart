@@ -1,20 +1,22 @@
-import 'package:mini_project_team_7/data/model/profile_model.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../routes/routes.dart';
+import '../model/user_model.dart';
 import 'api_path.dart';
 
 class ProfileRemote {
-  Future<ProfileModel> fetchProfile(
-    http.Client? client,
-  ) async {
-    final response = await client!.get(Uri.parse("${ApiPath.baseUrl}/users/1"));
+  Future<UserModel> getUserById(String id) async {
+    try {
+      await settings.put('id', id);
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> jsonResponse = json.decode(response.body);
-      return ProfileModel.fromJson(jsonResponse);
-    } else {
-      throw Exception('Failed to load profile');
+      DocumentSnapshot userDoc = await userRef.doc(id).get();
+
+      UserModel user = UserModel.fromJson(
+          userDoc.id, userDoc.data() as Map<String, dynamic>);
+
+      return user;
+    } catch (e) {
+      rethrow;
     }
   }
 }

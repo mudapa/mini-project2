@@ -1,6 +1,7 @@
 import 'package:provider/single_child_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../presentation/bloc/camera_cubit/camera_cubit.dart';
 import '../presentation/bloc/cart_bloc/cart_bloc.dart';
 import '../presentation/bloc/notification_cubit/notification_cubit.dart';
 import '../presentation/bloc/page_cubit/page_cubit.dart';
@@ -27,6 +28,9 @@ class BlocProviders {
     ),
     BlocProvider(
       create: (context) => NotificationCubit(),
+    ),
+    BlocProvider(
+      create: (context) => CameraCubit(),
     ),
   ];
 }

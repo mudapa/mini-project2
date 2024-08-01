@@ -77,13 +77,14 @@ class DetailProductPage extends StatelessWidget {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          GoRouter.of(context).pop();
                         },
                         child: const Text('Cancel'),
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          GoRouter.of(context).pop();
+
                           snackbar(
                             context,
                             msg: 'Coming Soon',

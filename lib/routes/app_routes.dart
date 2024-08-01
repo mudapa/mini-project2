@@ -37,9 +37,59 @@ class AppRoutes {
         pageBuilder: (context, state) => CustomTransitionPage(
           child: const MainPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+              FadeTransition(opacity: animation, child: child),
+        ),
+      ),
+      GoRoute(
+        path: NamedRoutes.updateProfilePath,
+        name: NamedRoutes.updateProfileName,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          child: DetailProfilePage(
+            user: state.extra as UserModel,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+              FadeTransition(opacity: animation, child: child),
+        ),
+      ),
+      GoRoute(
+        path: NamedRoutes.manageUserPath,
+        name: NamedRoutes.manageUserName,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          child: const ManageUserPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
               SlideTransition(
             position: Tween<Offset>(
-              begin: const Offset(1.5, 0),
+              begin: const Offset(-1.5, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          ),
+        ),
+      ),
+      GoRoute(
+        path: NamedRoutes.manageProductPath,
+        name: NamedRoutes.manageProductName,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          child: const ManageProductPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+              SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(-1.5, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          ),
+        ),
+      ),
+      GoRoute(
+        path: NamedRoutes.addProductPath,
+        name: NamedRoutes.addProductName,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          child: const AddProductPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+              SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(-1.5, 0),
               end: Offset.zero,
             ).animate(animation),
             child: child,
@@ -56,7 +106,24 @@ class AppRoutes {
           transitionsBuilder: (context, animation, secondaryAnimation, child) =>
               SlideTransition(
             position: Tween<Offset>(
-              begin: const Offset(1.5, 0),
+              begin: const Offset(-1.5, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          ),
+        ),
+      ),
+      GoRoute(
+        path: NamedRoutes.detailUserPath,
+        name: NamedRoutes.detailUserName,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          child: DetailUserPage(
+            user: state.extra as UserModel,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+              SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(-1.5, 0),
               end: Offset.zero,
             ).animate(animation),
             child: child,
